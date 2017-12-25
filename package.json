@@ -1,0 +1,26 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "bonjour": "^3.5.0",
+    "node-storage": "^0.0.7",
+    "socket.io-client": "^2.0.4",
+    "systeminformation": "^3.33.11"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simonaron/device-service-client.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/simonaron/device-service-client/issues"
+  },
+  "homepage": "https://github.com/simonaron/device-service-client#readme"
+}
