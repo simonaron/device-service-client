@@ -40,7 +40,9 @@ bonjour.find({ name: 'device-service-server' }, function (service) {
 
   socket.on('connect', function(){
     console.log("SOCKET SERVER CONNECTED");
-    getSysInfo().then(data => socket.emit('client-info', data));
+    setTimeout(() => {
+      getSysInfo().then(data => socket.emit('client-info', data));
+    }, 3000);
   });
 
   // socket.on('update', function(){
