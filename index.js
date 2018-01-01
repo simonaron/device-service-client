@@ -1,16 +1,12 @@
-//var sleep = require("sleep");
-//var exec = require('child_process').exec;
-//var Storage = require('node-storage');
-//var store = new Storage('storage');
 var bonjour = require('bonjour')();
 var socketio = require('socket.io-client');
+var si = require('systeminformation');
 var server;
 
-const si = require('systeminformation');
 
 function getSysInfo() {
   var sysinfo = {};
-  var interface = "";
+  var iface = "";
 
   return new Promise((resolve, reject) => {
     si.osInfo()
@@ -21,12 +17,12 @@ function getSysInfo() {
         return si.networkInterfaceDefault();
       })
       .then(defaultNetworkInterface => {
-        interface = defaultNetworkInterface;
+        iface = defaultNetworkInterface;
 
         return si.networkInterfaces();
       })
       .then(data => {
-        var network = data.find((item) => { return item.iface == interface})
+        var network = data.find((item) => { return item.iface == iface})
         sysinfo.ip = network.ip4;
         sysinfo.mac = network.mac;
 
@@ -36,9 +32,8 @@ function getSysInfo() {
   });
 }
 
-bonjour.findOne({ name: 'device-service-server' }, function (service) {
+bonjour.findOne({ type: 'device-service-server' }, function (service) {
   if(server === undefined) {
-    console.log('kiscica')
     server = socketio(`http://${service.addresses[0]}:${service.port}`);
 
     server.on('connect', function(){
