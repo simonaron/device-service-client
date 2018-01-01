@@ -2,7 +2,9 @@
 //var exec = require('child_process').exec;
 //var Storage = require('node-storage');
 //var store = new Storage('storage');
-var bonjour = require('bonjour')()
+var bonjour = require('bonjour')();
+var socketio = require('socket.io-client');
+var server;
 
 const si = require('systeminformation');
 
@@ -34,25 +36,21 @@ function getSysInfo() {
   });
 }
 
-bonjour.find({ name: 'device-service-server' }, function (service) {
-  var socket = require('socket.io-client')
-    (`http://${service.addresses[0]}:${service.port}`);
+bonjour.findOne({ name: 'device-service-server' }, function (service) {
+  if(server === undefined) {
+    console.log('kiscica')
+    server = socketio(`http://${service.addresses[0]}:${service.port}`);
 
-  socket.on('connect', function(){
-    console.log("SOCKET SERVER CONNECTED");
-    setInterval(() => {
-      getSysInfo().then(data => socket.emit('client-info', data));
-    }, 3000);
-  });
+    server.on('connect', function(){
+      console.log("SOCKET SERVER CONNECTED");
+    });
 
-  // socket.on('update', function(){
-  // 	exec('git pull', (err, stdout, stderr) => {
-  // 	  if (err) {
-  // 	    console.error(err);
-  // 	    return;
-  // 	  }
-  // 	  console.log(stdout);
-  // 	});
-  // });
-  socket.on('disconnect', function(){console.log("SOCKET SERVER DISCONNECTED")});
+    server.on('client-info-request', () => {
+      getSysInfo().then(data => server.emit('client-info-response', data));
+    });
+
+    server.on('disconnect', function(){
+      console.log("SOCKET SERVER DISCONNECTED")
+    });
+  }
 })
